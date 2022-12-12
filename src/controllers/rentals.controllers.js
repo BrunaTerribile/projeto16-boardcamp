@@ -57,9 +57,26 @@ export async function addRental(req, res){
 }
 
 export async function returnRental(req, res){
+    const { id } = req.params;
 
 }
 
 export async function deleteRental(req, res){
-    
+    const { id } = req.params;
+
+    try {
+        const rentalExist = await connection.query(`SELECT * FROM rentals WHERE id=$1`, [id]);
+        if(rentalExist.rows === 0){ //verifica se o aluguel está registrado
+            return res.sendStatus(404);
+        } else if(rentalExist.rows[0].returnDate != null){ //verifica se o aluguel já está finalizado
+            return res.send("Esse aluguel já foi finalizado").status(400);
+        }
+
+        const result = await connection.query(`DELETE FROM rentals WHERE id=$1`, [id]);
+        console.log(result)
+        res.sendStatus(200)
+    } catch (err){
+        console.log(err);
+        res.sendStatus(500);
+    }
 }
