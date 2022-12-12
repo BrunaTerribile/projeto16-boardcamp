@@ -2,17 +2,18 @@ import connection from "../database/db.js";
 import { gameSchema } from "../models/games.model.js";
 
 export async function getGames(req, res){
-    const { name } = req.query
+    const name = req.query.name;
 
     try {
         if(name){
-            const filterGames = await connection.query("SELECT * FROM games WHERE name LIKE '%($1)%';", [name]);
-            console.log(filterGames);
-            res.send(filterGames.rows);
+            const gameName = `%${name}%`
+            const filterGames = await connection.query(
+                'SELECT games.*, categories.name as "categoryName", categories.id FROM games JOIN categories ON games."categoryId" = categories.id WHERE games.name LIKE $1 ', [gameName]);
+            return res.send(filterGames.rows).status(400);
         }
 
-        const games = await connection.query("SELECT * FROM games;");
-        console.log(games);
+        const games = await connection.query(
+            'SELECT games.*, categories.name as "categoryName", categories.id FROM games JOIN categories ON games."categoryId" = categories.id');
         res.send(games.rows);
     } catch (err){
         console.log(err);
