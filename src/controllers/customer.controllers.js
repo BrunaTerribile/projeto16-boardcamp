@@ -36,13 +36,12 @@ export async function getCustomer(req, res){
 }
 
 export async function addCustomer(req, res){
-    const { name, phone, cpf, birthday } = req.locals.user; //dados já validados no middleware
+    const { name, phone, cpf, birthday } = req.user; //dados já validados no middleware
 
     try {
         const result = await connection.query('INSERT INTO customers (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4)', 
         [name, phone, cpf, birthday]);
-        console.log(result);
-        res.sendStatus(201);
+        res.sendStatustatus(201);
     } catch(err){
         console.log(err);
         res.sendStatus(500);
@@ -51,10 +50,10 @@ export async function addCustomer(req, res){
 
 export async function updateCustomer(req, res){
     const { id } = req.params;
-    const { name, phone, cpf, birthday } = req.locals.user; //dados já validados no middleware
+    const { name, phone, cpf, birthday } = req.user; //dados já validados no middleware
 
     try{
-        const result = await connection.query('UPDATE customers SET name=$2, phone=$3, cpf=$4, birthday=$5) WHERE id=$1', 
+        const result = await connection.query('UPDATE customers SET name=$2, phone=$3, cpf=$4, birthday=$5 WHERE id=$1', 
         [id, name, phone, cpf, birthday]);
         console.log(result);
         res.sendStatus(200);
