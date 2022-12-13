@@ -3,7 +3,6 @@ import connection from "../database/db.js";
 export async function getCategories(req, res){
     try {
         const categories = await connection.query("SELECT * FROM categories;");
-        console.log(categories);
         res.send(categories.rows);
     } catch (err){
         console.log(err);
@@ -19,13 +18,12 @@ export async function postCategory(req, res){
     }
 
     try {
-        const nameExist =  await connection.query("SELECT * FROM categories WHERE name=($1)", [name])
-        if(nameExist){
+        const nameExist =  await connection.query(`SELECT name FROM categories WHERE name=($1)`, [name])
+        if(nameExist.rowCount !== 0){
             return res.sendStatus(409)
         }
 
-        const result = await connection.query("INSERT INTO categories (name) VALUES ($1)", [name]);
-        console.log(result);
+        const result = await connection.query(`INSERT INTO categories (name) VALUES ($1)`, [name]);
         res.sendStatus(201);
     } catch (err){
         console.log(err);

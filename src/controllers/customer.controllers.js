@@ -41,7 +41,7 @@ export async function addCustomer(req, res){
     try {
         const result = await connection.query('INSERT INTO customers (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4)', 
         [name, phone, cpf, birthday]);
-        res.sendStatustatus(201);
+        res.sendStatus(201);
     } catch(err){
         console.log(err);
         res.sendStatus(500);
@@ -55,7 +55,6 @@ export async function updateCustomer(req, res){
     try{
         const result = await connection.query('UPDATE customers SET name=$2, phone=$3, cpf=$4, birthday=$5 WHERE id=$1', 
         [id, name, phone, cpf, birthday]);
-        console.log(result);
         res.sendStatus(200);
     } catch(err){
         console.log(err);

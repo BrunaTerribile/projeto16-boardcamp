@@ -6,8 +6,8 @@ export async function customerSchemaValidation (req, res, next){
 
     try{
       const userExist = await connection.query("SELECT * FROM customers WHERE cpf=$1", [userData.cpf]) //verifica se o cliente com esse cpf já existe
-      if(userExist.rows != 0){ 
-          return res.sendStatus(409)
+      if(userExist.rowCount !== 0){
+        return res.sendStatus(409)
       }
   
       const { error } = customerSchema.validate(userData, { abortEarly: false }); //validação joi
