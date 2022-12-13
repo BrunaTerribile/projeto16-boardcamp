@@ -8,12 +8,19 @@ export async function getGames(req, res){
         if(name){
             const gameName = `%${name}%`
             const filterGames = await connection.query(
-                'SELECT games.*, categories.name as "categoryName", categories.id FROM games JOIN categories ON games."categoryId" = categories.id WHERE games.name LIKE $1 ', [gameName]);
+                `SELECT games.*, categories.name as "categoryName"
+                FROM games 
+                JOIN categories 
+                ON games."categoryId" = categories.id 
+                WHERE games.name ILIKE $1 `, [gameName]);
             return res.send(filterGames.rows).status(400);
         }
 
         const games = await connection.query(
-            'SELECT games.*, categories.name as "categoryName", categories.id FROM games JOIN categories ON games."categoryId" = categories.id');
+            `SELECT games.*, categories.name as "categoryName"
+            FROM games 
+            JOIN categories 
+            ON games."categoryId" = categories.id`);
         res.send(games.rows);
     } catch (err){
         console.log(err);
@@ -48,8 +55,10 @@ export async function postGame(req, res){
           return res.status(400).send(errors);
         }
 
-        const result = await connection.query('INSERT INTO games (name, image, "stockTotal", "categoryId", "pricePerDay") VALUES ($1, $2, $3, $4, $5)', 
-        [name, image, stockTotal, categoryId, pricePerDay]);
+        const result = await connection.query(`
+            INSERT INTO games (name, image, "stockTotal", "categoryId", "pricePerDay") 
+            VALUES ($1, $2, $3, $4, $5)`, 
+            [name, image, stockTotal, categoryId, pricePerDay]);
         console.log(result);
         res.sendStatus(201);
     } catch (err){

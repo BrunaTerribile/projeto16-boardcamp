@@ -39,8 +39,10 @@ export async function addCustomer(req, res){
     const { name, phone, cpf, birthday } = req.user; //dados já validados no middleware
 
     try {
-        const result = await connection.query('INSERT INTO customers (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4)', 
-        [name, phone, cpf, birthday]);
+        const result = await connection.query(`
+            INSERT INTO customers (name, phone, cpf, birthday) 
+            VALUES ($1, $2, $3, $4)`, 
+            [name, phone, cpf, birthday]);
         res.sendStatus(201);
     } catch(err){
         console.log(err);
